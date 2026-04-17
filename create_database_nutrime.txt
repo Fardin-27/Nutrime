@@ -1,0 +1,256 @@
+drop database customdiet;
+create database customdiet;
+show databases;
+use customdiet;
+
+create table admin (
+    adminid int not null,
+    password varchar(50) not null,
+    primary key(adminid)
+);
+
+
+create table doctor (
+    licensenumber varchar(50) not null,
+    name varchar(50), 
+    password varchar(50) not null,
+    specialization varchar(50),
+    phone_no varchar(20), 
+    seniorkey int,
+    primary key(licensenumber)
+);
+
+
+create table dietchart (
+    dietid int not null,
+    licensenumber varchar(50) not null,
+    primary key(dietid),
+    foreign key (licensenumber) references doctor(licensenumber)
+);
+
+create table patient (
+    patientid varchar(50) not null,
+    Patient_name varchar(50),
+    age int,
+    height_m int,
+    weight_kg int,
+    password varchar(50) not null,
+    primary key(patientid));
+
+create table fooditems (
+    foodid int not null,
+    calories int,
+    name varchar(50),
+    primary key(foodid)
+);
+create table reviews (
+    patientid varchar(50),
+    licensenumber varchar(50),
+    comments varchar(500),
+    rating int,
+    primary key (patientid, licensenumber),
+    foreign key (patientid) references patient(patientid),
+    foreign key (licensenumber) references doctor(licensenumber)
+);
+create table includes (
+    dietid int not null ,
+    foodid int not null,
+    primary key (dietid, foodid),
+    foreign key (dietid) references dietchart(dietid),
+    foreign key (foodid) references fooditems(foodid)
+);
+
+create table symptoms (
+    symptom_id varchar(30) not null,
+    symptom varchar(50) not null,
+    primary key (symptom_id)
+);
+
+create table patientsymptoms (
+    patientid varchar(50) not null,
+    symptom_id varchar(30) not null,
+    primary key (patientid, symptom_id),
+    foreign key (patientid) references patient(patientid),
+    foreign key (symptom_id) references symptoms(symptom_id)
+);
+
+create table appointment (
+appointmentid varchar(50),
+patientid varchar(50) not null,
+dietid int,
+licensenumber varchar(50) not null,
+status varchar(50),
+fees decimal(10, 2),
+primary key (appointmentid, patientid, licensenumber),
+foreign key (patientid) references patient(patientid),
+foreign key (licensenumber) references doctor(licensenumber),
+foreign key( dietid) references dietchart(dietid));
+
+
+describe admin;
+describe doctor;
+describe dietchart;
+describe patient;
+describe fooditems;
+describe reviews;
+describe includes;
+describe patientsymptoms;
+describe appointment;
+
+
+insert into admin values 
+(11, 'admin2023'),
+(22, 'nutrition123');
+
+
+insert into doctor values 
+('BD001', 'Dr. Ayesha Khan', 'secureDiet123', 'Pediatric Dietician', '+8801712345678', 1),
+('BD002', 'Dr. Farhan Ahmed', 'dietPlan456', 'Clinical Dietician', '+8801812345678', 1), 
+('BD003', 'Dr. Nusrat Jahan', 'healthyLife789', 'Sports Dietician', '+8801912345678', 0),
+('BD004', 'Dr. Tanvir Rahman', 'nutritionPro123', 'Weight Loss Specialist', '+8801512345678', 0),
+('BD005', 'Dr. Sharmeen Akter', 'dietCare456', 'Renal Dietician', '+8801612345678', 0);
+
+insert into dietchart values 
+(502, 'BD002'),
+(504, 'BD004');
+
+insert into patient values 
+('P001', 'Rahim Uddin', 35, 1.75, 75, 'rahimSecure123'),
+('P002', 'Fatema Begum', 28, 1.60, 62, 'fatemaHealthy456'),
+('P003', 'Tanjim Fardin', 28, 1.60, 62, 'fardin42');
+
+insert into fooditems values 
+(1, 95, 'Apple'),
+(2, 50, 'Carrot'),
+(3, 220, 'Rice'),
+(4, 150, 'Milk'),
+(5, 250, 'Chicken'),
+(6, 100, 'Lentils'),
+(7, 120, 'Vegetables'),
+(8, 300, 'Fish'),
+(9, 180, 'Shrimp'),
+(10, 110, 'Egg'),
+(11, 140, 'Ruti'),
+(12, 60, 'Tomato'),
+(13, 90, 'Eggplant'),
+(14, 350, 'Hilsa'),
+(15, 50, 'Cucumber'),
+(16, 45, 'Mango'),
+(17, 90, 'Spinach'),
+(18, 140, 'Sweet Potato'),
+(19, 200, 'Beef'),
+(20, 300, 'Salmon'),
+(21, 250, 'Quinoa'),
+(22, 60, 'Yogurt'),
+(23, 130, 'Bread'),
+(24, 200, 'Soup'),
+(25, 90, 'Banana'),
+(26, 55, 'Pineapple'),
+(27, 50, 'Blueberries'),
+(28, 150, 'Trail Mix'),
+(29, 200, 'Hummus'),
+(30, 110, 'Dark Chocolate'),
+(31, 120, 'Dessert'),
+(32, 150, 'Sweet Yogurt'),
+(33, 180, 'cheese'),
+(34, 23, 'Dates'),
+(35, 17, 'lemon'),
+(36, 120, 'oats'),
+(37, 120, 'curry'),
+(38, 90, 'Bottle Gaurd'),
+(39, 50, 'Lettuce'),
+(40, 300, 'Shawarma'),
+(41, 100, 'Peanut Butter'),
+(42, 110, 'juice'),
+(43, 150, 'Stir Fry'),
+(44, 220, 'biriyani'),
+(45, 90, 'Potato'),
+(46, 120, 'pumpkin'),
+(47, 110, 'Avocado'),
+(48, 100, 'Almond'),
+(49, 90, 'Orange'),
+(50, 100, 'Strawberry');
+
+insert into reviews values 
+('P001', 'BD002', 'helpful and detailed plan for balanced diet', 4),
+('P002', 'BD004', 'great advice for controlling my weight.', 5);
+
+insert into includes values 
+(502, 1),
+(502, 2),
+(502, 3),
+(502, 5),
+(502,11 ),
+(504, 1),
+(504,2),
+(504,9),
+(504,11),
+(504,5),
+(504,7),
+(504,17);
+
+
+insert into symptoms values
+('sym1', 'Fatigue'),
+('sym2', 'Bloating'),
+('sym3', 'Anxiety'),
+('sym4', 'Constipation'),
+('sym5', 'Diarrhea'),
+('sym6', 'Obesity'),
+('sym7', 'Thinness'),
+('sym8', 'Insomnia'),
+('sym9', 'Headache'),
+('sym10', 'Nausea'),
+('sym11', 'Acidity'),
+('sym12', 'Weakness'),
+('sym13', 'Stress'),
+('sym14', 'Dizziness'),
+('sym15', 'Hairfall'),
+('sym16', 'Sweating'),
+('sym17', 'Cravings'),
+('sym18', 'Depression'),
+('sym19', 'Dehydration'),
+('sym20', 'Allergies'),
+('sym21', 'Swelling'),
+('sym22', 'Jointpain'),
+('sym23', 'Heartburn'),
+('sym24', 'Rash'),
+('sym25', 'Tiredness'),
+('sym26', 'Cough'),
+('sym27', 'Vomiting'),
+('sym28', 'Dryness'),
+('sym29', 'Overeating'),
+('sym30', 'Palpitations');
+
+insert into patientsymptoms values 
+('P001', 'sym1'),
+('P001', 'sym2'),
+('P001', 'sym4'),
+('P001', 'sym9'),
+('P001', 'sym12'),
+('P001', 'sym19'),
+('P001', 'sym21'),
+('P002', 'sym6'),
+('P002', 'sym8'),
+('P002', 'sym11'),
+('P002', 'sym13'),
+('P002', 'sym17'),
+('P002', 'sym25'),
+('P002', 'sym29');
+
+insert into appointment values
+('APT001', 'P001', 502, 'BD002', 'Confirmed', 2000.00),
+('APT002', 'P002', Null, 'BD004', 'Pending', 1000.00);
+
+
+select *from admin;
+select *from doctor;
+select *from dietchart;
+select *from patient;
+select *from fooditems;
+select *from reviews;
+select *from includes;
+select *from symptoms;
+select *from patientsymptoms;
+select *from appointment;
+
